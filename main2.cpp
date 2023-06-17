@@ -1,6 +1,41 @@
-#include "matplotlibcpp.h"
-namespace plt = matplotlibcpp;
+#include "point3d.h"
+#include <iostream>
+
 int main() {
-    plt::plot({1,3,2,4});
-    plt::show();
+    std::vector<double> initialPosition = {5.0, 5.0, 5.0};
+    double initialEnergy = 10.0;
+    double initialRadius = 4.0;
+    double initialHeight = 2.0;
+
+    Point3D point(initialPosition, initialEnergy, initialRadius, initialHeight);
+
+    // Print initial state
+    std::cout << "Initial State:" << std::endl;
+    point.printAll();
+
+    // Modify position
+    std::vector<double> newPosition = {1.0, 1.0, 1.0};
+    point.setPosition(newPosition);
+
+    // Modify direction
+    std::vector<double> newDirection = {0.5, -0.3, 0.8};
+    point.setDirection(newDirection);
+
+	// Modify Energy
+	double  newEnergy = 3.71;
+    point.setEnergy(newEnergy);
+
+	//Update is in cyllinder
+	point.checkisInCyllinder();
+
+	//Update cross sections
+	
+	point.updateCrossSections();
+
+    // Print modified state
+    std::cout << "Modified State:" << std::endl;
+    point.printAll();
+
+    return 0;
 }
+

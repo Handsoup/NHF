@@ -283,9 +283,26 @@ void Point3D::addFWHMToEnergy() {
     
 }
 
+double Point3D:: getIntersectionMember(int index) const {
+        
+		if (index >= 0 && index < intersection.size()) {
+            return intersection[index];
+        }
 
+	   	else {
+            // Handle index out of range error
+            std::cerr << "Error: Index out of range!" << std::endl;
+            // You can choose to throw an exception or return a default value here
+            // For simplicity, we'll return -1 as an error indicator
+            return -1;
+        }
+    }
 
+bool Point3D::getIsInCyllinder() {
 
+	return isInCyllinder;
+
+}
 
 
 

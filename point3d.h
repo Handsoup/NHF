@@ -49,6 +49,9 @@ public:
 	void initializeKahnDirection();
 	void calculateEnergyAfterComptonScattering();
 	void addFWHMToEnergy();
+
+	double getIntersectionMember(int index) const;
+	bool getIsInCyllinder();
 };
 
 #endif

@@ -2,11 +2,12 @@
 #include <cmath>
 #include <iostream>
 #include <random>
+#include <algorithm>
 
 //constructor
 
 Point3D::Point3D(const std::vector<double>& pos, double Energy, double Radius, double height, double fwhm, const std::vector<std::vector<double>>& cSData)
-    : E(Energy), R(Radius), h(height), Distance(0), position(pos), interpolator(cSData), FWHM(fwhm), crossSections(4, 0.0), intersection(4,0.0), freePathLength(-1), comptonEnergyDifference(-1) {
+    : E(Energy), R(Radius), h(height), Distance(0), position(pos), interpolator(cSData), FWHM(fwhm), crossSections(4, 0.0), intersection(4,0.0), freePathLength(-1), comptonEnergyDifference(-1), negativeDirection(3,0.0), savedPosition(3,0.0) {
     initializeDirection();
 	checkisInCyllinder();
 	updateCrossSections();
@@ -37,7 +38,7 @@ void Point3D::printAll() const {
 	std::cout << "free path length: " << freePathLength << std::endl;
 }
 
-void Point3D::checkisInCyllinder() {
+void Point3D::checkisInCyllinder() const {
 	if (position[0] <= R && position[0] >= -R && position[1] <= R && position[1] >= -R && position[2] <= h/2 && position[2] >= -h/2){
 	isInCyllinder = true;
 	}
@@ -152,11 +153,6 @@ void Point3D::calculateIntersection()
 // Destructor
 Point3D::~Point3D() {
 
-
-    position.clear();
-    direction.clear();
-    crossSections.clear();
-    crossSectionsData.clear();
 }
 
 
@@ -184,11 +180,11 @@ void Point3D::initializeKahnDirection() {
 	bool loop = true;
 
 	// cos theta = 1 + lambda - lambda*X
-	double X;
+	double X,R;
+	bool i = false;
+	bool j = false;
 
-	while (loop) {
-		bool i=false;
-		bool j = false;
+	while (loop == true) {
 
 		// Generate three random real numbers
     	double r1 = dis(gen);
@@ -198,7 +194,7 @@ void Point3D::initializeKahnDirection() {
 
 		if (r1 <= (1 +2/lambda)/(9+2/lambda)) {
 	
-			double R = 1 + 2*r2/lambda;
+			R = 1 + 2*r2/lambda;
 			if (r3 <= 4*(1/R-1/(R*R))) {
 		
 				i = true;
@@ -209,7 +205,7 @@ void Point3D::initializeKahnDirection() {
 
 		else {
 
-			double R = (1+2/lambda)/(1+2*r2/lambda);
+			R = (1+2/lambda)/(1+2*r2/lambda);
 			if (r3 <= 0.5*((lambda-R*lambda+1)*(lambda-R*lambda+1)+1/R)) {
 			
 				j = true;
@@ -263,7 +259,7 @@ void Point3D::calculateEnergyAfterComptonScattering() {
 
 }
 
-void Point3D::addFWHMToEnergy() {
+double Point3D::getFWHMToEnergy() const {
 
     // Calculate the standard deviation based on FWHM
     double sigma = FWHM / (2.0 * std::sqrt(2.0 * std::log(2.0)));
@@ -279,7 +275,7 @@ void Point3D::addFWHMToEnergy() {
     double randomValue = dist(gen);
     
     // Add the random value to the current Energy
-    E = E + randomValue;
+    return randomValue;
     
 }
 
@@ -292,21 +288,89 @@ double Point3D:: getIntersectionMember(int index) const {
 	   	else {
             // Handle index out of range error
             std::cerr << "Error: Index out of range!" << std::endl;
+
             // You can choose to throw an exception or return a default value here
             // For simplicity, we'll return -1 as an error indicator
             return -1;
         }
     }
 
-bool Point3D::getIsInCyllinder() {
+bool Point3D::getIsInCyllinder() const {
 
+	this->checkisInCyllinder();
 	return isInCyllinder;
 
 }
 
+double Point3D::getFreePathLength() const {
 
+	return freePathLength;
 
+}
 
+double Point3D::getIndexedDirection(int index) const {
+
+	return direction[index];
+
+}
+
+double Point3D::getIndexedPosition(int index) const {
+
+	return position[index];
+
+}
+
+void Point3D::setIndexedPosition(int index, double value) {
+
+	position[index] = value;
+
+}
+
+int Point3D::generateRandomEvent() {
+    double totalCrossSection = crossSections[3];
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    std::uniform_real_distribution<> dis(0, totalCrossSection);
+    double randomNumber = dis(gen);
+
+    if (randomNumber <= crossSections[0]) {
+        return 1;
+    } else if (randomNumber <= crossSections[0] + crossSections[1]) {
+        return 2;
+    } else {
+        return 3;
+    }
+}
+
+double Point3D::getComptonEnergyDifference() const {
+
+	return comptonEnergyDifference;
+
+}
+
+void Point3D::saveNegativeDirection() {
+    for (size_t i = 0; i < direction.size(); ++i) {
+        negativeDirection[i] = direction[i] * -1;
+    }
+}
+
+double Point3D::getIndexedNegativeDirection(int index) const {
+
+	return negativeDirection[index];
+
+}
+
+void Point3D::savePosition() {
+    for (size_t i = 0; i < position.size(); ++i) {
+        savedPosition[i] = position[i];
+    }
+}
+
+void Point3D::loadPosition() {
+    for (size_t i = 0; i < savedPosition.size(); ++i) {
+        position[i] = savedPosition[i];
+    }
+}
 
 
 

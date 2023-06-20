@@ -9,7 +9,7 @@ private:
     double E;
     double R, h;
     double Distance;
-    bool isInCyllinder;
+    mutable bool isInCyllinder;
 	double freePathLength;
 	double cosTheta;
 	double comptonEnergyDifference;
@@ -21,6 +21,8 @@ private:
 	std::vector<std::vector<double>> crossSectionsData;
 	Interpolate interpolator;
 	std::vector<double> intersection;
+	std::vector<double> negativeDirection;
+	std::vector<double> savedPosition;
 	
 
 public:
@@ -30,7 +32,7 @@ public:
     void initializeDirection();
 	
     void printAll() const;
-    void checkisInCyllinder();
+    void checkisInCyllinder() const;
     void updateCrossSections();
 
     std::vector<double> getPosition() const;
@@ -48,10 +50,27 @@ public:
 
 	void initializeKahnDirection();
 	void calculateEnergyAfterComptonScattering();
-	void addFWHMToEnergy();
+	double  getFWHMToEnergy() const;
 
 	double getIntersectionMember(int index) const;
-	bool getIsInCyllinder();
+	bool getIsInCyllinder() const;
+	double getFreePathLength() const;
+
+	double getIndexedDirection(int index) const;
+	double getIndexedPosition(int index) const;
+	void setIndexedPosition(int index, double value);
+	
+	int generateRandomEvent();
+
+	double getComptonEnergyDifference() const;
+
+	void saveNegativeDirection();
+	void savePosition();
+	void loadPosition();
+
+	double getIndexedNegativeDirection(int index) const;
+
+
 };
 
 #endif

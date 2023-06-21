@@ -6,9 +6,11 @@
 #include <vector>
 #include "crossSections.h"
 #include "iostream"
+#include <fstream>
 
 void simulateTransport(std::vector<double>& pos, double E, double R, double h, double fwhm, std::vector<std::vector<double>>& cSData, double rho, double numberOfParticles, std::string csvFilePath, Energies& energies) {
 	
+	std::ofstream outputFile("output.txt", std::ios::app);
 
   	// Setup cross sections
   	processCrossSections(rho, csvFilePath, cSData);
@@ -194,10 +196,14 @@ void simulateTransport(std::vector<double>& pos, double E, double R, double h, d
 			} 
 
 			//std::cout << "eddig jó, ciklus vége" << std::endl;
-		
+			outputFile << energies.getReleasedEnergy(i);
+			if (i != 99999) {
+                outputFile << ",";
+            }	
 		}
 
 	}
+	outputFile.close();
 	std::cout << "max energy: " << energies.getReleasedEnergyMax() << std::endl; 
 	energies.calculateEtaTot();
 	energies.calculateEtaInt();

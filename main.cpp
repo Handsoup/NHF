@@ -22,14 +22,14 @@ int main() {
 
 
 
-	std::vector<double> pos={3,-3,2};
-    double E = 1.6617;//keV
-    double R = 2.5;
-    double h = 3;
-    double fwhm = 0.006;
+	std::vector<double> pos={4.0,4.0,0.0};
+    double E = 4.0;//keV
+    double R = 3;
+    double h = 5;
+    double fwhm = 0.008;
     std::vector<std::vector<double>> cSData;
     double rho = 3.67;
-    double numberOfParticles = 100000;
+    double numberOfParticles = 10000000;
     std::string csvFilePath = "crossSections.csv";
     Energies energies(numberOfParticles);
 

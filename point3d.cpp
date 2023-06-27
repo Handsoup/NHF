@@ -22,10 +22,22 @@ void Point3D::distanceFromOrigin() {
 
 void Point3D::initializeDirection() {
     std::random_device rd;
-    std::mt19937 gen(rd()); //Mersenne Twister pseudo-random generator
+    std::mt19937 gen(rd()); // Mersenne Twister pseudo-random generator
     std::uniform_real_distribution<double> dis(-1.0, 1.0);
+	
+	double lengthSquared;
 
-    direction = { dis(gen), dis(gen), dis(gen) };
+    do {
+        direction = { dis(gen), dis(gen), dis(gen) };
+		 lengthSquared = std::sqrt(direction[0]*direction[0]+direction[1]*direction[1]+direction[2]*direction[2]);
+
+    } while (lengthSquared > 1.0);
+
+	double length = std::sqrt(lengthSquared);
+	direction[0] /= length;
+	direction[1] /= length;
+	direction[2] /= length;
+
 }
 
 void Point3D::printAll() const {
@@ -250,7 +262,7 @@ void Point3D::calculateEnergyAfterComptonScattering() {
     const double electronMass = 0.511; // Electron mass energy equivalent in MeV
 
     // Calculate the scattered photon's energy
-    double finalEnergy = E / (1 + (E / (electronMass * (1 - cosTheta))));
+    double finalEnergy = E / (1 + (E / electronMass * (1 - cosTheta)));
 
     // Calculate the energy difference (change)
     comptonEnergyDifference = E - finalEnergy;
@@ -334,9 +346,9 @@ int Point3D::generateRandomEvent() {
     double randomNumber = dis(gen);
 
     if (randomNumber <= crossSections[0]) {
-        return 1;
-    } else if (randomNumber <= crossSections[0] + crossSections[1]) {
         return 2;
+    } else if (randomNumber <= crossSections[0] + crossSections[1]) {
+        return 1;
     } else {
         return 3;
     }

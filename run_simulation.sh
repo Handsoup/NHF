@@ -14,4 +14,4 @@ python3 plotter.py
 
 # Wait for gamma_simulation process to finish
 wait $gamma_pid
-ython3 plotter.py
+python3 plotter.py

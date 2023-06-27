@@ -16,7 +16,8 @@ def process_file(filename):
     yAxis = [0] * 1024
 
     # Create xAxis
-    xAxis = [i * (2 / 1024) for i in range(1024)]
+    E = 4
+    xAxis = [i * (E*1.2 / 1024) for i in range(1024)]
 
     # Find closest xAxis values and update yAxis accordingly
     for value in values_list:

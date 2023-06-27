@@ -35,7 +35,7 @@ void simulateTransport(std::vector<double>& pos, double E, double R, double h, d
 			//gammaPhoton.printAll();
 			for(int j=0; j<gammaPhoton.getPosition().size(); j++) {
 			
-				gammaPhoton.setIndexedPosition(i, gammaPhoton.getIndexedPosition(i)+gammaPhoton.getIndexedDirection(i)*gammaPhoton.getFreePathLength());
+				gammaPhoton.setIndexedPosition(j, gammaPhoton.getIndexedPosition(j)+gammaPhoton.getIndexedDirection(j)*gammaPhoton.getFreePathLength());
 
 			} 
 			energies.addToEnergyInCylinder(gammaPhoton.getEnergy());
@@ -60,9 +60,7 @@ void simulateTransport(std::vector<double>& pos, double E, double R, double h, d
 					gammaPhoton.initializeKahnDirection();
 					gammaPhoton.calculateEnergyAfterComptonScattering();
 					energies.addToEnergyReleased(gammaPhoton.getComptonEnergyDifference()+gammaPhoton.getFWHMToEnergy(),i);
-					std::cout << "a" << std::endl;
 					gammaPhoton.updateCrossSections();
-					std::cout << "b" << std::endl;
 					gammaPhoton.generateFreePathLength();
 					for(int j=0; j<gammaPhoton.getPosition().size(); j++) {
 			
@@ -77,7 +75,7 @@ void simulateTransport(std::vector<double>& pos, double E, double R, double h, d
 					std::cout << "pair production start" << std::endl;
 					gammaPhoton.initializeDirection();
 					energies.addToEnergyReleased(gammaPhoton.getEnergy()-1.022+gammaPhoton.getFWHMToEnergy(),i);
-					gammaPhoton.setEnergy(0.522);
+					gammaPhoton.setEnergy(0.511);
 					gammaPhoton.updateCrossSections();
 					gammaPhoton.savePosition();
 					gammaPhoton.saveNegativeDirection();
@@ -197,7 +195,7 @@ void simulateTransport(std::vector<double>& pos, double E, double R, double h, d
 
 			//std::cout << "eddig jó, ciklus vége" << std::endl;
 			outputFile << energies.getReleasedEnergy(i);
-			if (i != 99999) {
+			if (i != numberOfParticles-1) {
                 outputFile << ",";
             }	
 		}
